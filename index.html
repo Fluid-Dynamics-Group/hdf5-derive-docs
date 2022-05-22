@@ -1,0 +1,199 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="hdf5-derive"><meta name="keywords" content="rust, rustlang, rust-lang, hdf5_derive"><title>hdf5_derive - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../dark.css" disabled><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../storage.js"></script><script src="../crates.js"></script><script defer src="../main.js"></script>
+    <noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../hdf5_derive/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div>
+        </a><h2 class="location"></h2>
+    </nav>
+    <nav class="sidebar"><a class="sidebar-logo" href="../hdf5_derive/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div>
+        </a><h2 class="location"><a href="#">Crate hdf5_derive</a></h2><div class="sidebar-elems"><div class="block"><ul><li class="version">Version 0.1.0</li><li><a id="all-types" href="all.html">All Items</a></li></div></ul><section><div class="block"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#derives">Derive Macros</a></li></ul></div></section><div id="sidebar-vars" data-name="hdf5_derive" data-ty="mod" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../hdf5_derive/index.html"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="main-heading">
+    <h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">hdf5_derive</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/hdf5_derive/lib.rs.html#1-145">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="hdf5-derive"><a href="#hdf5-derive">hdf5-derive</a></h2>
+<p>read and write arrays from an hdf5 file to a struct</p>
+<h3 id="usage"><a href="#usage">Usage</a></h3>
+<p>You can use the <code>hdf5_derive::HDF5</code> derive macro to make you struct of <a href="https://docs.rs/ndarray/0.15/ndarray/type.Array.html"><code>ndarray::Array&lt;T&gt;</code></a> data writeable. The macro
+derives the <a href="trait.ContainerIo.html" title="ContainerIo"><code>ContainerIo</code></a> trait, which provides a <code>.write_hdf5</code> and <code>read_hdf5</code> method.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">hdf5_derive</span>::{<span class="ident">HDF5</span>, <span class="ident">ContainerIo</span>};
+<span class="kw">use</span> <span class="ident">ndarray::Array3</span>;
+<span class="kw">use</span> <span class="ident">ndarray::Array4</span>;
+
+<span class="kw">let</span> <span class="ident">N</span> <span class="op">=</span> <span class="number">100</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">HDF5</span>)]</span>
+<span class="kw">struct</span> <span class="ident">Data</span> {
+	<span class="ident">pressure</span>: <span class="ident">Array3</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
+	<span class="ident">velocity</span>: <span class="ident">Array4</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
+	<span class="ident">temperature</span>: <span class="ident">Array3</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
+	<span class="attribute">#[<span class="ident">hdf5</span>(<span class="ident">attribute</span>)]</span>
+	<span class="ident">reynolds_number</span>: <span class="ident">f64</span>,
+	<span class="attribute">#[<span class="ident">hdf5</span>(<span class="ident">attribute</span>)]</span>
+	<span class="ident">timesteps</span>: <span class="ident">u64</span>,
+}
+
+<span class="comment">// fill the struct with some data</span>
+<span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">Data</span> {
+	<span class="ident">pressure</span>: <span class="ident">Array3::zeros</span>((<span class="ident">N</span>, <span class="ident">N</span>, <span class="ident">N</span>)),
+	<span class="ident">temperature</span>: <span class="ident">Array3::zeros</span>((<span class="ident">N</span>, <span class="ident">N</span>, <span class="ident">N</span>)),
+	<span class="ident">velocity</span>: <span class="ident">Array4::zeros</span>((<span class="ident">N</span>, <span class="ident">N</span>, <span class="ident">N</span>, <span class="number">3</span>)),
+	<span class="ident">timesteps</span>: <span class="number">10_000</span>,
+	<span class="ident">reynolds_number</span>: <span class="number">1650.</span>
+};
+
+<span class="comment">// write data to a file</span>
+<span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">hdf5_derive::File::create</span>(<span class="string">&quot;some-file.h5&quot;</span>).<span class="ident">unwrap</span>();
+<span class="ident">data</span>.<span class="ident">write_hdf5</span>(<span class="kw-2">&amp;</span><span class="ident">file</span>);
+
+<span class="comment">// read data from a file</span>
+<span class="kw">let</span> <span class="ident">loaded_data</span> <span class="op">=</span> <span class="ident">Data::read_hdf5</span>(<span class="kw-2">&amp;</span><span class="ident">file</span>);
+
+<span class="ident">std::fs::remove_file</span>(<span class="string">&quot;some-file.h5&quot;</span>).<span class="ident">ok</span>();</code></pre></div>
+<p>When passing a <a href="struct.File.html"><code>hdf5::File</code></a> to <code>read_hdf5</code> and <code>write_hdf5</code>, ensure that the 
+file was opened with the correct permissions.</p>
+<h3 id="transposing"><a href="#transposing">Transposing</a></h3>
+<p>The rust <a href="https://docs.rs/ndarray/0.15/ndarray/index.html" title="ndarray"><code>ndarray</code></a> library uses <strong>row-major</strong> (C-order) indexing to store its arrays. Row major indexing
+implies that the <strong>last index is the fastest</strong> index to iterate over. Other common examples of row major (by default)
+arrangements are:</p>
+<ul>
+<li><code>ndarray</code></li>
+<li>numpy</li>
+<li>C libraries</li>
+</ul>
+<p>In contrast, <strong>column-major</strong> (Fortran-order) storage implies the <strong>fastest index is the first index</strong>. Common 
+examples of column major indexing are:</p>
+<ul>
+<li>Fortran</li>
+<li>Matlab</li>
+<li>julia</li>
+</ul>
+<p>Since <code>hdf5</code> has no sense of the order of the matrices stored, you must manually transpose the arrays read. You can do this through
+the <code>transpose</code> attribute:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">hdf5_derive::HDF5</span>;
+<span class="kw">use</span> <span class="ident">ndarray::Array3</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">HDF5</span>)]</span>
+<span class="attribute">#[<span class="ident">hdf5</span>(<span class="ident">transpose</span><span class="op">=</span><span class="string">&quot;read&quot;</span>)]</span>
+<span class="kw">struct</span> <span class="ident">FortranData</span> {
+	<span class="ident">array</span>: <span class="ident">ndarray::Array3</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>
+}</code></pre></div>
+<p>The possible options for the transpose argument are:</p>
+<ul>
+<li>read</li>
+<li>write</li>
+<li>both</li>
+<li>none</li>
+</ul>
+<p>You can override a container level attribute on a field as well:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">hdf5_derive::HDF5</span>;
+<span class="kw">use</span> <span class="ident">ndarray::Array3</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">HDF5</span>)]</span>
+<span class="attribute">#[<span class="ident">hdf5</span>(<span class="ident">transpose</span><span class="op">=</span><span class="string">&quot;both&quot;</span>)]</span>
+<span class="kw">struct</span> <span class="ident">FortranData</span> {
+	<span class="attribute">#[<span class="ident">hdf5</span>(<span class="ident">transpose</span><span class="op">=</span><span class="string">&quot;none&quot;</span>)]</span>
+	<span class="comment">// `array` here will not be transposed when read / written</span>
+	<span class="ident">array</span>: <span class="ident">ndarray::Array3</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
+}</code></pre></div>
+<h3 id="renaming-arrays"><a href="#renaming-arrays">Renaming Arrays</a></h3>
+<p>By default, <code>hdf5_derive</code> looks for a dataset in the provided file with an identical name as the struct member.
+You can use the <code>rename</code> attribute to change what should be read (or written) with a file:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">hdf5_derive::HDF5</span>;
+<span class="kw">use</span> <span class="ident">ndarray::Array4</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">HDF5</span>)]</span>
+<span class="kw">struct</span> <span class="ident">RenamedData</span> {
+	<span class="attribute">#[<span class="ident">hdf5</span>(<span class="ident">rename</span>(<span class="ident">write</span><span class="op">=</span><span class="string">&quot;my_array&quot;</span>, <span class="ident">read</span> <span class="op">=</span> <span class="string">&quot;array_name_in_file&quot;</span>))]</span>
+	<span class="ident">array</span>: <span class="ident">ndarray::Array3</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
+}</code></pre></div>
+<p>or:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">hdf5_derive::HDF5</span>;
+<span class="kw">use</span> <span class="ident">ndarray::Array4</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">HDF5</span>)]</span>
+<span class="kw">struct</span> <span class="ident">RenamedData</span> {
+	<span class="attribute">#[<span class="ident">hdf5</span>(<span class="ident">rename</span>(<span class="ident">both</span> <span class="op">=</span> <span class="string">&quot;my_array&quot;</span>))]</span>
+	<span class="ident">array</span>: <span class="ident">ndarray::Array3</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
+}</code></pre></div>
+<p>You can specify either <code>read</code>, <code>write</code>, <code>read</code> and <code>write</code>, or <code>both</code> if they <code>read == write</code>. If you 
+specify <code>both</code> and <code>read</code> (or <code>write</code>), the value defaults to the expression provided in <code>both</code>.</p>
+<h3 id="mutating-existing-files"><a href="#mutating-existing-files">Mutating Existing Files</a></h3>
+<p>If you only wish to change some values from an existing file, then you can use the <code>#[mutate_on_write]</code> attribute
+to mutate existing datasets. By default, <code>mutate_on_write</code> is set to <code>false</code> - meaning that datasets will be 
+created for every field. If this field already exists, then this will result in an error. </p>
+<p>You can use container level attributes or field level attributes to specify the write behavior for a field. A container
+level attribute will change the default behavior of all fields, but a field level attribute will supersede any container
+level attributes (similar to <code>#[transpose]</code>). To mutate all fields in a struct:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">hdf5_derive::HDF5</span>;
+<span class="kw">use</span> <span class="ident">ndarray::Array2</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">HDF5</span>)]</span>
+<span class="attribute">#[<span class="ident">hdf5</span>(<span class="ident">mutate_on_write</span>)]</span>
+<span class="kw">struct</span> <span class="ident">MutateData</span> {
+	<span class="comment">// a dataset named `array` is now expected to already exist</span>
+	<span class="ident">array</span>: <span class="ident">ndarray::Array3</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
+}</code></pre></div>
+<p>If you are mutating some fields of an <code>hdf5</code> file while creating new fields for others, you can mix and match 
+<code>mutate_on_write</code> for your desired behavior:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">hdf5_derive::HDF5</span>;
+<span class="kw">use</span> <span class="ident">ndarray::Array2</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">HDF5</span>)]</span>
+<span class="attribute">#[<span class="ident">hdf5</span>(<span class="ident">mutate_on_write</span>)]</span>
+<span class="kw">struct</span> <span class="ident">MutateData</span> {
+	<span class="comment">// a dataset named `array` is now expected to already exist</span>
+	<span class="ident">array</span>: <span class="ident">ndarray::Array3</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+
+	<span class="comment">// a dataset `create_me_dataset` will be created </span>
+	<span class="attribute">#[<span class="ident">hdf5</span>(<span class="ident">mutate_on_write</span><span class="op">=</span><span class="bool-val">false</span>)]</span>
+	<span class="ident">create_me_dataset</span>: <span class="ident">ndarray::Array3</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
+}</code></pre></div>
+<h3 id="attributes"><a href="#attributes">Attributes</a></h3>
+<p>You can also store scalar attributes along with array data with the <code>#[hdf5(attribute)]</code> attribute.
+All the previous attributes (with the exception of transposing) can be applied to scalar attributes as
+well.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">hdf5_derive::HDF5</span>;
+<span class="kw">use</span> <span class="ident">ndarray::Array3</span>;
+<span class="kw">use</span> <span class="ident">ndarray::Array5</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">HDF5</span>)]</span>
+<span class="kw">struct</span> <span class="ident">SolverResultWithAttribute</span> {
+	<span class="ident">high_dimensional_data</span>: <span class="ident">Array5</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
+	<span class="attribute">#[<span class="ident">hdf5</span>(<span class="ident">attribute</span>)]</span>
+	<span class="attribute">#[<span class="ident">hdf5</span>(<span class="ident">mutate_on_write</span>)]</span>
+	<span class="ident">current_timestep</span>: <span class="ident">u32</span>,
+}</code></pre></div>
+<h3 id="reading-and-writing-large-data-files"><a href="#reading-and-writing-large-data-files">Reading and writing large data files</a></h3>
+<p><code>hdf5-derive</code> makes no attempt to partially load data from an array. Instead, the entire dataset specified is loaded
+into memory. If you wish to only access a slice from a large file, it may be more efficient to directly use the <code>hdf5</code>
+library.</p>
+<h3 id="why-cant-you-do-this-with-trait-based-generics"><a href="#why-cant-you-do-this-with-trait-based-generics">Why cant you do this with trait based generics?</a></h3>
+<p>In order to handle both attributes and arrays, you could definie a trait like this:</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">trait</span> <span class="ident">Write</span> {
+	<span class="comment">// methods here</span>
+}</code></pre></div>
+<p>and then implement it for both <a href="hdf5::H5Type"><code>H5Type</code></a> (attributes) and <a href="https://docs.rs/ndarray/0.15/ndarray/type.ArrayView.html"><code>ArrayView</code></a>:</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="comment">// for attributes</span>
+<span class="kw">impl</span> <span class="ident">Write</span> <span class="kw">for</span> <span class="ident">T</span> <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">H5Type</span> { }</code></pre></div>
+<p>and:</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="comment">// for generic arrays</span>
+<span class="kw">impl</span> <span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="ident">Write</span> <span class="kw">for</span> <span class="ident">ndarray::ArrayView</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span>, <span class="ident">D</span><span class="op">&gt;</span> {}</code></pre></div>
+<p>however, we will run into a compiler error: we have made a blanket implementation for <code>T</code> and cant guarantee that our 
+<code>ArrayView</code> type is not <em>also</em> a <code>H5Type</code>. Therefore, the compiler will reject this implementation.</p>
+</div></details><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="mod" href="error/index.html" title="hdf5_derive::error mod">error</a></div><div class="item-right docblock-short"></div></div></div><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.File.html" title="hdf5_derive::File struct">File</a></div><div class="item-right docblock-short"><p>HDF5 file object.</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Group.html" title="hdf5_derive::Group struct">Group</a></div><div class="item-right docblock-short"><p>Represents the HDF5 group object.</p>
+</div></div></div><h2 id="enums" class="small-section-header"><a href="#enums">Enums</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.Error.html" title="hdf5_derive::Error enum">Error</a></div><div class="item-right docblock-short"><p>General error type that provides helpful information on what went wrong</p>
+</div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.ContainerIo.html" title="hdf5_derive::ContainerIo trait">ContainerIo</a></div><div class="item-right docblock-short"><p>Provides methods for reading and writing to an [<code>hdf5</code>] file. Derived with <a href="derive.HDF5.html" title="HDF5"><code>HDF5</code></a> macro.</p>
+</div></div></div><h2 id="derives" class="small-section-header"><a href="#derives">Derive Macros</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="derive" href="derive.HDF5.html" title="hdf5_derive::HDF5 derive">HDF5</a></div><div class="item-right docblock-short"><p>Derive read and write capabilities for a struct of arrays</p>
+</div></div></div></section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="hdf5_derive" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
+</body></html>
