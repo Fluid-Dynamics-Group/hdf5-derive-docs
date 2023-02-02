@@ -1,3 +1,4 @@
-var sourcesIndex = {};
-sourcesIndex["hdf5_derive"] = {"name":"","files":["error.rs","lib.rs"]};
+var sourcesIndex = JSON.parse('{\
+"hdf5_derive":["",[],["error.rs","lib.rs"]]\
+}');
 createSourceSidebar();
