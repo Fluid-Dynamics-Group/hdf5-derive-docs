@@ -306,6 +306,7 @@
 <a href="#306" id="306">306</a>
 <a href="#307" id="307">307</a>
 <a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
 </pre><pre class="rust"><code><span class="attr">#![doc = <span class="macro">include_str!</span>(<span class="string">&quot;../README.md&quot;</span>)]
 
 </span><span class="kw">pub use </span>macros::{ContainerRead, ContainerWrite};
@@ -502,7 +503,7 @@
 
 <span class="macro">attributes!</span>(f32, f64, i16, i32, i64, i8, isize, u16, u8, u32, u64, usize);
 
-<span class="doccomment">/// Defines how a given piece of data should be parsed. 
+<span class="doccomment">/// Defines how a given piece of data should be parsed.
 /// You likely do not want to use this trait; instead use the methods from [`ContainerRead`]
 </span><span class="kw">pub trait </span>ReadGroup {
     <span class="kw">fn </span>read_group(group: <span class="kw-2">&amp;</span>Group, array_name: <span class="kw-2">&amp;</span>str, transpose: bool) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, Error&gt;
@@ -537,7 +538,7 @@
     }
 }
 
-<span class="doccomment">/// Defines how a given piece of data should be written. 
+<span class="doccomment">/// Defines how a given piece of data should be written.
 /// You likely do not want to use this trait; instead use the methods from [`ContainerWrite`]
 </span><span class="kw">pub trait </span>WriteGroup {
     <span class="kw">fn </span>write_group(
@@ -566,11 +567,12 @@
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
     {
-        <span class="self">self</span>.view().write_group(group, array_name, transpose, mutate_on_write)
+        <span class="self">self</span>.view()
+            .write_group(group, array_name, transpose, mutate_on_write)
     }
 }
 
-<span class="kw">impl </span>&lt;<span class="lifetime">&#39;a</span>, S, D&gt; WriteGroup <span class="kw">for </span>ndarray::ArrayBase&lt;ndarray::ViewRepr&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>S&gt;, D&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, S, D&gt; WriteGroup <span class="kw">for </span>ndarray::ArrayBase&lt;ndarray::ViewRepr&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>S&gt;, D&gt;
 <span class="kw">where
     </span>S: hdf5::H5Type + Zero + Clone,
     D: ndarray::Dimension,
