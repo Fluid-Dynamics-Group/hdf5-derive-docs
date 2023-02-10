@@ -81,6 +81,18 @@
 <a href="#81" id="81">81</a>
 <a href="#82" id="82">82</a>
 <a href="#83" id="83">83</a>
+<a href="#84" id="84">84</a>
+<a href="#85" id="85">85</a>
+<a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
+<a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
+<a href="#91" id="91">91</a>
+<a href="#92" id="92">92</a>
+<a href="#93" id="93">93</a>
+<a href="#94" id="94">94</a>
+<a href="#95" id="95">95</a>
 </pre><pre class="rust"><code><span class="macro">macro_rules! </span>create_error_type {
     (<span class="macro-nonterminal">$error_name</span>:ident, <span class="macro-nonterminal">$format_str</span>:expr, <span class="macro-nonterminal">$doc_str</span>:expr) =&gt; {
         <span class="attr">#[doc=<span class="macro-nonterminal">$doc_str</span>]
@@ -121,6 +133,18 @@ provided&quot;#
     CreateDataset,
     <span class="string">&quot;Failed to create a dataset for `{}`&quot;</span>,
     <span class="string">&quot;Could not create a dataset in a hdf5 file when writing&quot;
+</span>}
+
+<span class="macro">create_error_type! </span>{
+    CreateGroup,
+    <span class="string">&quot;Failed to create a group for `{}`&quot;</span>,
+    <span class="string">&quot;Could not create a group in a hdf5 file when writing&quot;
+</span>}
+
+<span class="macro">create_error_type! </span>{
+    MissingGroup,
+    <span class="string">&quot;Failed to read a group `{}`&quot;</span>,
+    <span class="string">&quot;Could not open an existing group in a hdf5 file when writing&quot;
 </span>}
 
 <span class="macro">create_error_type! </span>{
@@ -165,4 +189,4 @@ provided&quot;#
     <span class="string">&quot;Failed to serialize the dataset to the correct type after it has been written&quot;
 </span>}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="hdf5_derive" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.0 (fc594f156 2023-01-24)" data-search-js="search-444266647c4dba98.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="hdf5_derive" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.1 (d5a82bbd2 2023-02-07)" data-search-js="search-444266647c4dba98.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>
