@@ -19,6 +19,12 @@ which derives the <a href="trait.ContainerRead.html" title="ContainerRead"><code
 	temperature: Array3&lt;f64&gt;,
 	reynolds_number: f64,
 	timesteps: u64,
+	supplemental_information: NestedData
+}
+
+<span class="attr">#[derive(ContainerRead, ContainerWrite)]
+</span><span class="kw">struct </span>NestedData {
+	vorticity: Array4&lt;f32&gt;
 }
 
 <span class="comment">// fill the struct with some data
@@ -27,8 +33,11 @@ which derives the <a href="trait.ContainerRead.html" title="ContainerRead"><code
 	temperature: Array3::zeros((N, N, N)),
 	velocity: Array4::zeros((N, N, N, <span class="number">3</span>)),
 	timesteps: <span class="number">10_000</span>,
-	reynolds_number: <span class="number">1650.
-</span>};
+	reynolds_number: <span class="number">1650.</span>,
+	supplemental_information: NestedData {
+		vorticity: Array4::zeros((N,N,N,<span class="number">3</span>))
+	}
+};
 
 <span class="comment">// write data to a file
 </span><span class="kw">let </span>file = hdf5_derive::File::create(<span class="string">&quot;some-file.h5&quot;</span>).unwrap();
@@ -122,7 +131,6 @@ level attribute will change the default behavior of all fields, but a field leve
 level attributes (similar to <code>#[transpose]</code>). To mutate all fields in a struct:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>hdf5_derive::{ContainerRead, ContainerWrite};
-<span class="kw">use </span>ndarray::Array2;
 
 <span class="attr">#[derive(ContainerRead, ContainerWrite)]
 #[hdf5(mutate_on_write)]
@@ -166,6 +174,50 @@ well.</p>
 	high_dimensional_data: Array5&lt;f64&gt;,
 	<span class="attr">#[hdf5(mutate_on_write)]
 	</span>current_timestep: u32,
+}</code></pre></div>
+<h3 id="hdf5-groups"><a href="#hdf5-groups">HDF5 Groups</a></h3>
+<p>you can nest <code>struct</code> definitions with derived <code>ContainerRead</code> / <code>ContainerWrite</code> in order to 
+parse nested groups. For example if you had the following layout:</p>
+<div class="example-wrap"><pre class="language-text"><code>.
+├── attribute_1
+├── attribute_2
+├── group_1
+│   ├── dataset_1
+│   ├── dataset_2
+│   └── dataset_3
+└── group_2
+    ├── attribute_1
+    ├── dataset_1
+    └── dataset_2
+</code></pre></div>
+<p>you could parse them with</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>hdf5_derive::{ContainerRead, ContainerWrite};
+<span class="kw">use </span>ndarray::{Array3, Array2};
+
+<span class="attr">#[derive(ContainerRead, ContainerWrite)]
+</span><span class="kw">struct </span>Root {
+	attribute_1: usize,
+	attribute_2: u16,
+	<span class="attr">#[hdf5(transpose=<span class="string">&quot;both&quot;</span>)] </span><span class="comment">// &lt;---- this attribute does nothing
+	</span>group_1: FirstGroup,
+	<span class="attr">#[hdf5(mutate_on_write=<span class="string">&quot;read&quot;</span>)] </span><span class="comment">// &lt;---- this attribute does nothing
+	</span>group_2: SecondGroup,
+}
+
+<span class="attr">#[derive(ContainerRead, ContainerWrite)]
+#[hdf5(mutate_on_write = <span class="string">&quot;both&quot;</span>)] </span><span class="comment">// &lt;-- this attribute works
+</span><span class="kw">struct </span>FirstGroup {
+	dataset_1: Array3&lt;u8&gt;
+	dataset_2: Array2&lt;f32&gt;
+	dataset_3: Array2&lt;usize&gt;
+}
+
+<span class="attr">#[derive(ContainerRead, ContainerWrite)]
+#[hdf5(transpose= <span class="string">&quot;read&quot;</span>)] </span><span class="comment">// &lt;-- this attribute works
+</span><span class="kw">struct </span>SecondGroup {
+	dataset_1: Array3&lt;f64&gt;
+	dataset_2: Array2&lt;i32&gt;
 }</code></pre></div>
 <h3 id="reading-and-writing-large-data-files"><a href="#reading-and-writing-large-data-files">Reading and writing large data files</a></h3>
 <p><code>hdf5-derive</code> makes no attempt to partially load data from an array. Instead, the entire dataset specified is loaded
