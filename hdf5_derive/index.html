@@ -201,23 +201,23 @@ parse nested groups. For example if you had the following layout:</p>
 	attribute_2: u16,
 	<span class="attr">#[hdf5(transpose=<span class="string">&quot;both&quot;</span>)] </span><span class="comment">// &lt;---- this attribute does nothing
 	</span>group_1: FirstGroup,
-	<span class="attr">#[hdf5(mutate_on_write=<span class="string">&quot;read&quot;</span>)] </span><span class="comment">// &lt;---- this attribute does nothing
+	<span class="attr">#[hdf5(mutate_on_write)] </span><span class="comment">// &lt;---- this attribute does nothing
 	</span>group_2: SecondGroup,
 }
 
 <span class="attr">#[derive(ContainerRead, ContainerWrite)]
-#[hdf5(mutate_on_write = <span class="string">&quot;both&quot;</span>)] </span><span class="comment">// &lt;-- this attribute works
+#[hdf5(mutate_on_write)] </span><span class="comment">// &lt;-- this attribute works
 </span><span class="kw">struct </span>FirstGroup {
-	dataset_1: Array3&lt;u8&gt;
-	dataset_2: Array2&lt;f32&gt;
-	dataset_3: Array2&lt;usize&gt;
+	dataset_1: Array3&lt;u8&gt;,
+	dataset_2: Array2&lt;f32&gt;,
+	dataset_3: Array2&lt;usize&gt;,
 }
 
 <span class="attr">#[derive(ContainerRead, ContainerWrite)]
 #[hdf5(transpose= <span class="string">&quot;read&quot;</span>)] </span><span class="comment">// &lt;-- this attribute works
 </span><span class="kw">struct </span>SecondGroup {
-	dataset_1: Array3&lt;f64&gt;
-	dataset_2: Array2&lt;i32&gt;
+	dataset_1: Array3&lt;f64&gt;,
+	dataset_2: Array2&lt;i32&gt;,
 }</code></pre></div>
 <h3 id="reading-and-writing-large-data-files"><a href="#reading-and-writing-large-data-files">Reading and writing large data files</a></h3>
 <p><code>hdf5-derive</code> makes no attempt to partially load data from an array. Instead, the entire dataset specified is loaded
